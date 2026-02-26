@@ -18,6 +18,17 @@ WORKDIR /app
 
 COPY ["build.gradle", "gradlew", "./"]
 COPY gradle gradle
+# Install wget and unzip
+RUN apt-get update && apt-get install -y wget unzip
+
+# Download and unpack Gradle distribution manually
+RUN wget https://services.gradle.org/distributions/gradle-8.14.3-bin.zip -O /tmp/gradle-8.14.3-bin.zip && \
+    unzip /tmp/gradle-8.14.3-bin.zip -d /opt/gradle && \
+    rm /tmp/gradle-8.14.3-bin.zip
+
+# Add Gradle to the PATH
+ENV PATH="/opt/gradle/gradle-8.14.3/bin:${PATH}"
+
 RUN chmod +x gradlew
 RUN ./gradlew downloadRepos
 
